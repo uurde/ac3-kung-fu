@@ -26,5 +26,19 @@ class Network(nn.Module):
         self.fc1 = torch.nn.Linear(512, 128)
         self.fc2a = torch.nn.Linear(128, action_size)
         self.fc2s = torch.nn.Linear(128, 1)
+    
+    def forward(self, state):
+        x = self.conv1(state)
+        x = F.relu(x)
+        x = self.conv2(x)
+        x = F.relu(x)
+        x = self.conv3(x)
+        x = F.relu(x)
+        x = self.flatten(x)
+        x = self.fc1(x)
+        x = F.relu(x)
+        action_values = self.fc2a(x)
+        state_value = self.fc2s(x)[0]
+        return action_values, state_value
 
 print("test")
