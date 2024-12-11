@@ -98,7 +98,7 @@ learning_rate = 10e-4
 discount_factor = 0.99
 number_envrionments = 10
 
-#implement the ac3 class
+#implement the a3c class
 class Agent():
     def __init__(self, action_size):
        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -135,3 +135,6 @@ class Agent():
         self.optimizer.zero_grad()
         total_loss.backward()
         self.optimizer.step()
+
+#initializing the a3c agent
+agent = Agent(number_actions)
