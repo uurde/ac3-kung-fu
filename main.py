@@ -96,7 +96,7 @@ print("Action names:", env.env.env.env.get_action_meanings())
 
 learning_rate = 10e-4
 discount_factor = 0.99
-number_envrionments = 10
+number_environments = 10
 
 #implement the a3c class
 class Agent():
@@ -139,7 +139,7 @@ class Agent():
 #initializing the a3c agent
 agent = Agent(number_actions)
 
-#evaluating our A3C agent on a certain number of episodes
+#evaluating our a3c agent on a certain number of episodes
 def evaluate(agent, env, n_episodes = 1):
    episodes_rewards = []
    for _ in range(n_episodes):
@@ -171,3 +171,19 @@ class EnvBatch:
            if dones[i]: 
               next_states[i] = self.envs[i].reset()[0]
         return next_states, rewards, dones, infos
+
+#training the a3c agent
+import tqdm
+
+env_batch = EnvBatch(number_environments)
+batch_states = env_batch.reset()
+
+with tqdm.trange(0, 3001) as progress_bar:
+    for i in progress_bar:
+       batch_actions = agent.act(batch_states)
+       batch_next_states, batch_rewards, batch_dones, _ = env_batch.step(batch_actions)
+       batch_rewards *= 0.01
+       agent.step(batch_states, batch_actions, batch_rewards, batch_next_states, batch_dones)
+       batch_states = batch_next_states
+       if i % 1000 == 0:
+          print("Average agent reward: ", np.mean(evaluate(agent, env, n_episodes = 10)))
